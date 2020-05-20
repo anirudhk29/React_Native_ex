@@ -62,7 +62,9 @@ class Main extends Component {
   render() {
     return(
     <NavigationContainer>
-      <MainNavigatorDrawer />
+      <View style={{flex:1}}>
+        <MainNavigatorDrawer />
+      </View>
     </NavigationContainer>
     );
   }
