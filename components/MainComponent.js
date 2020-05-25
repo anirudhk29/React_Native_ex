@@ -5,6 +5,7 @@ import Dishdetail from "./DishdetailComponent"
 import { View, ScrollView, Text, Image, StyleSheet, SafeAreaView } from "react-native";
 import Home from "./HomeComponent";
 import About from "./AboutComponent";
+import Reservation from "./ReservationComponent";
 import { Icon } from "react-native-elements";
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -124,6 +125,21 @@ function AboutNavigatorScreen() {
   );
 }
 
+const ReservationNavigator = createStackNavigator();
+function ReservationNavigatorScreen() {
+  return(
+    <ReservationNavigator.Navigator initialRouteName = "Reservation"
+     screenOptions = {HeaderOptions} >
+       <ReservationNavigator.Screen name= "Reserve Table" component={Reservation}
+        options = { ({navigation}) => ({
+          headerLeft : () => <MenuIcon navigation = {navigation} />
+        })
+      }
+      />
+     </ReservationNavigator.Navigator>
+  );
+}
+
 const MainNavigator= createDrawerNavigator();
 function MainNavigatorDrawer() {
   return (
@@ -157,6 +173,13 @@ function MainNavigatorDrawer() {
         options = {{
           drawerIcon : ({tintcolor}) => (
             <Icon name="info-circle" type="font-awesome" size={24} color={tintcolor} />
+          )
+        }}
+      />
+      <MainNavigator.Screen name="Reserve Table" component={ReservationNavigatorScreen} 
+        options = {{
+          drawerIcon : ({tintcolor}) => (
+            <Icon name="cutlery" type="font-awesome" size={24} color={tintcolor} />
           )
         }}
       />
