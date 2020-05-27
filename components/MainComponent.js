@@ -1,7 +1,8 @@
 import React , { Component } from "react";
 import Menu from "./MenuComponent";
-import Contact from "./ContactComponent"
-import Dishdetail from "./DishdetailComponent"
+import Contact from "./ContactComponent";
+import Dishdetail from "./DishdetailComponent";
+import Favorites from "./FavoriteComponent";
 import { View, ScrollView, Text, Image, StyleSheet, SafeAreaView } from "react-native";
 import Home from "./HomeComponent";
 import About from "./AboutComponent";
@@ -140,6 +141,21 @@ function ReservationNavigatorScreen() {
   );
 }
 
+const FavoritesNavigator = createStackNavigator();
+function FavoritesNavigatorScreen() {
+  return(
+    <FavoritesNavigator.Navigator initialRouteName = "Favorites"
+     screenOptions = {HeaderOptions} >
+       <FavoritesNavigator.Screen name= "Favorites" component={Favorites}
+        options = { ({navigation}) => ({
+          headerLeft : () => <MenuIcon navigation = {navigation} />
+        })
+      }
+      />
+     </FavoritesNavigator.Navigator>
+  );
+}
+
 const MainNavigator= createDrawerNavigator();
 function MainNavigatorDrawer() {
   return (
@@ -173,6 +189,13 @@ function MainNavigatorDrawer() {
         options = {{
           drawerIcon : ({tintcolor}) => (
             <Icon name="info-circle" type="font-awesome" size={24} color={tintcolor} />
+          )
+        }}
+      />
+      <MainNavigator.Screen name="Favorites" component={FavoritesNavigatorScreen} 
+        options = {{
+          drawerIcon : ({tintcolor}) => (
+            <Icon name="heart" type="font-awesome" size={24} color={tintcolor} />
           )
         }}
       />
