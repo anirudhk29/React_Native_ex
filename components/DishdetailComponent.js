@@ -31,6 +31,13 @@ function RenderDish(props) {
 
   }
 
+  const recognizeComment = ({moveX, moveY,dx,dy}) => {
+    if(dx > 200)
+      return true;
+    else 
+      return false;
+  }
+
   const panResponder = PanResponder.create({
     onStartShouldSetPanResponder : (e, getsureState) => {
       return true;
@@ -41,6 +48,7 @@ function RenderDish(props) {
     onPanResponderEnd : (e, getsureState ) => {
       console.log("Pan responder end" ,  getsureState);
       if(recognizeDrag(getsureState)) 
+      {
         Alert.alert("Add Favorite",
          "Are you sure you wish to add "+dish.name+" to favorite?",
         [
@@ -56,6 +64,12 @@ function RenderDish(props) {
         {cancelable: false}   
         );
       return true;
+      }
+      else if(recognizeComment(getsureState))
+      {
+        props.toggleModal();
+        return true;
+      }
     }
   })
 

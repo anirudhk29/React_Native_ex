@@ -1,6 +1,7 @@
 import React,{ Component } from "react";
-import { Text, View, ScrollView, StyleSheet, Picker, Switch, Button, Modal} from "react-native"
+import { Text, View, StyleSheet, Picker, Switch, Button, Alert} from "react-native"
 import DatePicker from 'react-native-datepicker'
+import * as Animatable from "react-native-animatable";
 
 class Reservation extends Component {
     constructor(props) {
@@ -9,17 +10,26 @@ class Reservation extends Component {
             guests : 1,
             outdoor : false,
             date : "",
-            showModal: false
         }
     }
 
     handleReservation () {
-        console.log(JSON.stringify(this.state));
+        Alert.alert("Your Reservation OK",
+             "Number of Guests : "+this.state.guests + "\n"+
+             "Outdoors : "+this.state.outdoor + "\n"+
+             "Date and Time :"+this.state.date + "\n",
+             [
+                 {
+                    text:"Cancel", onPress: () => this.resetForm(),
+                        style:"cancel"
+                 },
+                 {
+                    text: "OK", onPress: () =>this.resetForm()
+                 }
+             ],
+             {cancelable: false}     
+        );
         
-    }
-
-    toggleModal() {
-        this.setState({showModal: !this.state.showModal});
     }
 
     resetForm() {
@@ -32,7 +42,7 @@ class Reservation extends Component {
 
     render() {
         return(
-            <ScrollView>
+            <Animatable.View animation="zoomIn" duration={2000} delay={1000} >
                 <View style = {styles.formRow}>
                     <Text styles = {styles.formLabel}>Number of Guests</Text>
                     <Picker style = {styles.formItem} selectedValue = {this.state.guests}
@@ -67,21 +77,11 @@ class Reservation extends Component {
                         onDateChange = {(date) => {this.setState({date:date})}} />
                 </View>
                 <View style = {styles.formRow}>
-                    <Button onPress = {()=> this.toggleModal()} 
+                    <Button onPress = {()=> this.handleReservation()} 
                         title = "Reserve" color="#512DA8" />
                 </View> 
-                <Modal animationType={"fade"} transparent = {false} visible={this.state.showModal}
-                    onDismiss= {()=> this.toggleModal()} onRequestClose = {() => this.toggleModal()} >
-                    <View style={styles.modal}>
-                        <Text style={styles.modalTitle}>Your Reservation</Text>
-                        <Text style={styles.modalText}>Number of Guests: {this.state.guests}</Text>
-                        <Text style={styles.modalText}>Outdoors?: {this.state.outdoor ? "Yes" : "No"}</Text>
-                        <Text style={styles.modalText}>Date and Time: {this.state.date}</Text>
-                        <Button onPress = {() => {this.toggleModal(); this.resetForm();}}
-                            color="#512DA8" title="close" />
-                    </View>
-                </Modal>
-            </ScrollView>
+                
+            </Animatable.View>
         );
     }
 }
