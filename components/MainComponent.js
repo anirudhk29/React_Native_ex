@@ -6,6 +6,7 @@ import Favorites from "./FavoriteComponent";
 import { View, ScrollView, Text, Image, StyleSheet, SafeAreaView } from "react-native";
 import Home from "./HomeComponent";
 import About from "./AboutComponent";
+import Login from "./LoginComponent";
 import Reservation from "./ReservationComponent";
 import { Icon } from "react-native-elements";
 import { NavigationContainer } from '@react-navigation/native';
@@ -96,12 +97,26 @@ function HomeNavigatorScreen() {
   );
 }
 
+const LoginNavigator = createStackNavigator();
+function LoginNavigatorScreen() {
+  return(
+    <LoginNavigator.Navigator initialRouteName = "Login" 
+      screenOptions = {HeaderOptions}>
+        <LoginNavigator.Screen name = "Login" component = {Login}
+          options = { ({navigation}) => ({
+            headerLeft: () => <MenuIcon navigation={navigation} />
+          })
+        } />
+    </LoginNavigator.Navigator>
+  );
+}
+
 const ContactNavigator = createStackNavigator();
 function ContactNavigatorScreen() {
   return(
     <ContactNavigator.Navigator initalRouteName ="Contact Us"
       screenOptions = {HeaderOptions} >
-      <HomeNavigator.Screen name="Contact Us" component={Contact}
+      <ContactNavigator.Screen name="Contact Us" component={Contact}
         options = { ({navigation}) => ({
           headerLeft: () => <MenuIcon navigation={navigation} />
         })
@@ -164,10 +179,18 @@ function MainNavigatorDrawer() {
         backgroundColor : "#D1C4E9"
       }} drawerContent={props => <CustomDrawerContentComponent{...props} />}
       >
+      
       <MainNavigator.Screen name="Home" component={HomeNavigatorScreen} 
         options = {{
           drawerIcon : ({tintcolor}) => (
             <Icon name="home" type="font-awesome" size={24} color={tintcolor} />
+          )
+        }}
+      />
+      <MainNavigator.Screen name="Login" component={LoginNavigatorScreen} 
+        options = {{
+          drawerIcon : ({tintcolor}) => (
+            <Icon name="sign-in" type="font-awesome" size={24} color={tintcolor} />
           )
         }}
       />
