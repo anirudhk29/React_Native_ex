@@ -1,7 +1,9 @@
 import React,{ Component } from "react";
-import { Text, View, StyleSheet, Picker, Switch, Button, Alert} from "react-native"
+import { Text, View, StyleSheet, Picker, Switch, Button, Alert, Platform} from "react-native"
 import DatePicker from 'react-native-datepicker'
 import * as Animatable from "react-native-animatable";
+import * as Permissions from "expo-permissions";
+import { Notifications } from "expo";
 
 class Reservation extends Component {
     constructor(props) {
@@ -24,7 +26,9 @@ class Reservation extends Component {
                         style:"cancel"
                  },
                  {
-                    text: "OK", onPress: () =>this.resetForm()
+                    text: "OK", onPress:  () => { this.presentLocalNotification(this.state.date);
+                        this.resetForm();
+                    }
                  }
              ],
              {cancelable: false}     
@@ -39,6 +43,41 @@ class Reservation extends Component {
             date : ""
         });
     }
+
+    async obtainNotificationPermisson() {
+        let permission = await Permissions.getAsync(Permissions.USER_FACING_NOTIFICATIONS);
+        if(permission.status !== "granted") {
+            permission = await Permissions.askAsync(Permissions.USER_FACING_NOTIFICATIONS);
+            if(permission.status !== "granted") {
+                Alert.alert("Permission not granted to show notifications");
+            }
+        }
+        return permission;
+    }
+
+    async presentLocalNotification(date) {
+        await this.obtainNotificationPermisson();
+        
+        Notifications.createChannelAndroidAsync("1",{
+            name : "default",
+            sound : true,
+            vibrate : true,
+        })
+        .catch((error) => console.log(error));
+
+        Notifications.presentLocalNotificationAsync({
+            title: "Your Reservation",
+            body : "Reservation for " + date + "requested",
+            ios : {
+                sound : true
+            },
+            android : {
+                channelId : "1",
+                color : "#512DA8"
+            }
+        });
+        
+    };
 
     render() {
         return(
