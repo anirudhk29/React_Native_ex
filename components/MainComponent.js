@@ -3,7 +3,7 @@ import Menu from "./MenuComponent";
 import Contact from "./ContactComponent";
 import Dishdetail from "./DishdetailComponent";
 import Favorites from "./FavoriteComponent";
-import { View, ScrollView, Text, Image, StyleSheet, SafeAreaView } from "react-native";
+import { View, ScrollView, Text, Image, StyleSheet, SafeAreaView, ToastAndroid } from "react-native";
 import Home from "./HomeComponent";
 import About from "./AboutComponent";
 import Login from "./LoginComponent";
@@ -14,6 +14,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { createDrawerNavigator, DrawerItemList } from '@react-navigation/drawer';
 import { connect } from "react-redux";
 import { fetchDishes, fetchComments, fetchLeaders, fetchPromos} from "../redux/ActionCreators";
+import NetInfo from "@react-native-community/netinfo";
 
 const mapStateToProps = state => {
   return{
@@ -233,13 +234,44 @@ function MainNavigatorDrawer() {
   );
 }
 
-class Main extends Component {
+var unsubscribe;
 
+class Main extends Component {
+  
+  constructor(props) {
+    super(props);
+  }
   componentDidMount() {
     this.props.fetchDishes();
     this.props.fetchLeaders();
     this.props.fetchPromos();
     this.props.fetchComments();
+
+    NetInfo.fetch().then((connectionInfo) => {
+      ToastAndroid.show("Initial Network connectivity Type: " + connectionInfo.type,ToastAndroid.LONG)
+    });
+    unsubscribe = NetInfo.addEventListener(connectionInfo =>{
+      switch(connectionInfo.type) {
+        case "none":
+          ToastAndroid.show("You are now offline!",ToastAndroid.LONG);
+          break;
+        case "wifi":
+          ToastAndroid.show("You are now connected to WiFi!" , ToastAndroid.LONG);
+          break;
+        case "cellular":
+          ToastAndroid.show("You are now connected to cellular!",ToastAndroid.LONG);
+          break;
+        case "unknown":
+          ToastAndroid.show("You have a unknown connection!", ToastAndroid.LONG);
+          break;
+
+        default:
+          break;
+      }
+    }) 
+  }
+  componentWillUnmount() {
+    unsubscribe();
   }
 
   render() {
